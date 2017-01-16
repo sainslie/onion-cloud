@@ -11,7 +11,7 @@ echo ${}
 echo ${}
 
 =https://uec-images.ubuntu.com/query/xenial/server/released.current.txt
-curl --silent ${} | grep ebs
+curl --silent ${} | grep ebs-ssd
 =$(curl --silent "${}" | awk '-F\t' '$ == ebs-ssd && $ ==  && $ ==  { print $ }' = = )
 =$(curl --silent "${}" | awk '-F\t' '$ == ebs-ssd && $ ==  && $ ==  { print $ }' = = )
 
