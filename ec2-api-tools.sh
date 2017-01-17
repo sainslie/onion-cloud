@@ -137,121 +137,71 @@ apt-get -y install tor tor-geoipdb tor-arm deb.torproject.org-keyring obfsproxy 
 echo "";
 cp /etc/tor/torrc /etc/tor/torrc
 
-#
-if [  == "" ]; then
-echo "";
-cat << EOF > 
-# 
+=20
+=120
+=2
+=""
+=""
+=""
 
-#
-Nickname $
+=(1 "" 2 "" 3 "")
 
-# 
-# 
-SocksPort 0
+=$(dialog --clear \ --backtitle "" \ --title "" \ --menu "" \ \ "" \ 2>&1 >/dev/tty)
 
-# 
-ORPort 443
-
-# 
-# 
-ORListenAddress 0.0.0.0:9001
-
-# 
-BridgeRelay 1
-
-# 
-ServerTransportPlugin obfs2,obfs3 exec /usr/bin/obfsproxy --managed
-ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy --managed
-ServerTransportListenAddr obfs2 0.0.0.0:52176
-ServerTransportListenAddr obfs3 0.0.0.0:40872
-ServerTransportListenAddr obfs4 0.0.0.0:46396
-
-# 
-# 
-# 
-AccountingStart week 1 10:00
-AccountingMax 10 GB
-BandwidthRate 20KB
-BandwidthBurst 1GB
-
-# 
-# 
-ExitPolicy reject *:*
-EOF
-
-echo ""
-echo "" > /etc/
-echo ""
-sleep 20
-reboot
-fi
-
-#
-if [  == "" ]; then
-echo "";
-cat << EOF > 
-# 
-
-#
-Nickname $
-
-# 
-# 
-SocksPort 0
-
-# 
-ORPort 443
-
-# 
-# 
-ORListenAddress 0.0.0.0:9001
-
-# 
-BridgeRelay 1
-
-# 
-ServerTransportPlugin obfs2,obfs3 exec /usr/bin/obfsproxy --managed
-ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy --managed
-ServerTransportListenAddr obfs2 0.0.0.0:52176
-ServerTransportListenAddr obfs3 0.0.0.0:40872
-ServerTransportListenAddr obfs4 0.0.0.0:46396
-
-# 
-# 
-# 
-AccountingStart week 1 10:00
-AccountingMax 10 GB
-BandwidthRate 20KB
-BandwidthBurst 1GB
-
-# 
-# 
-ExitPolicy reject *:*
-EOF
-
-echo ""
-echo "" > /etc/
-echo ""
-sleep 20
-reboot
-fi
-
-# 
-if [ $ == "" ]; then
-echo "";
-
-# 
-cat << EOF > 
-SocksPort 0
-ORPort 443
-ORListenAddress 0.0.0.0:9001
-BridgeRelay 1
-PublishServerDescriptor 0
-AccountingStart week 1 10:00
-AccountingMax 10 GB
-ExitPolicy reject *:*
-EOF
+clear
+	case in
+	1)
+	cat << EOF >
+	Nickname $
+	SocksPort 0
+	ORPort 443
+	ORListenAddress 0.0.0.0:9001
+	BridgeRelay 1
+	ServerTransportPlugin obfs2,obfs3 exec /usr/bin/obfsproxy --managed
+	ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy --managed
+	ServerTransportListenAddr obfs2 0.0.0.0:52176
+	ServerTransportListenAddr obfs3 0.0.0.0:40872
+	ServerTransportListenAddr obfs4 0.0.0.0:46396
+	AccountingStart week 1 10:00
+	AccountingMax 10 GB
+	BandwidthRate 20KB
+	BandwidthBurst 1GB
+	ExitPolicy reject *:*
+	EOF
+		;;
+	2)
+	cat << EOF >
+	Nickname $
+	SocksPort 0
+	ORPort 443
+	ORListenAddress 0.0.0.0:9001
+	BridgeRelay 1
+	ServerTransportPlugin obfs2,obfs3 exec /usr/bin/obfsproxy --managed
+	ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy --managed
+	ServerTransportListenAddr obfs2 0.0.0.0:52176
+	ServerTransportListenAddr obfs3 0.0.0.0:40872
+	ServerTransportListenAddr obfs4 0.0.0.0:46396
+	AccountingStart week 1 10:00
+	AccountingMax 10 GB
+	BandwidthRate 20KB
+	BandwidthBurst 1GB
+	ExitPolicy reject *:*
+	EOF
+		;;
+	3)
+	cat << EOF >
+	SocksPort 0
+	ORPort 443
+	ORListenAddress 0.0.0.0:9001
+	BridgeRelay 1
+	PublishServerDescriptor 0
+	AccountingStart week 1 10:00
+	AccountingMax 10 GB
+	ExitPolicy reject *:*
+	EOF
+		;;
+	esac
+clear
 
 # 
 cat << EOF > /etc/rc.local
