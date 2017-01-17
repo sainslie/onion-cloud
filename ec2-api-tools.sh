@@ -23,9 +23,9 @@ echo ""
 echo ""
 apt-get update
 apt-get install apt-transport-https
-apt-get install apt-transport-tor
 apt-get install tlsdate
 apt-get install ca-certificates
+apt-get install dialog
 apt-get -y upgrade
 
 # 
@@ -256,7 +256,7 @@ EOF
 # 
 cat << EOF > /etc/rc.local
 #!/bin/sh -e
-sudo screen tcpdump -v -i any -s 0 -w /root/
+sudo screen tcpdump -v -i any -s 0 -w /home/ubuntu/
 EOF
 echo ""
 echo "" > /etc/
