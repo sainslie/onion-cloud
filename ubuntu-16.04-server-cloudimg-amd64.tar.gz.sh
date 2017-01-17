@@ -55,15 +55,15 @@ echo ""
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -t "sudo chown ubuntu:ubuntu /mnt && cd /mnt && tar -Sxvzf /mnt/ubuntu-16.04-server-cloudimg-amd64.tar.gz && sudo mkdir /mnt/src /mnt/target && sudo mount -o loop,rw /mnt/ubuntu-16.04-server-cloudimg-amd64-disk1.img /mnt/src && sudo mkfs.ext4 -F -L cloudimg-rootfs /dev/xvdh && sudo mount /dev/xvdh /mnt/target"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo wget -O /mnt/src/etc/rc.local"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo wget https://www.onioncloud.org/rc.local -O /mnt/src/etc/rc.local"
 
 # 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo sed -i s/type// /mnt/src/etc/rc.local"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo wget -O /mnt/src/etc/"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo wget https://www.onioncloud.org/ec2-api-tools.sh -O /mnt/src/etc/ec2-api-tools.sh"
 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo chmod +x /mnt/src/etc/"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo chmod +x /mnt/src/etc/ec2-api-tools.sh"
 
 # 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${} -q -v -t "sudo rsync -aXHAS /mnt/src/ /mnt/target"

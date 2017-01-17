@@ -34,10 +34,10 @@ echo ""
 
 # 
 cp /etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/10periodic
-#wget https://github.com/
+wget https://www.onioncloud.org/10periodic
 mv /home/ubuntu/10periodic /etc/apt/apt.conf.d/10periodic
 cp /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
-#wget https://github.com/
+wget https://www.onioncloud.org/50unattended-upgrades
 mv /home/ubuntu/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
 
 # 
@@ -67,12 +67,12 @@ esac
 
 # 
 cp /home/ubuntu/.gnupg/gpg.conf /home/ubuntu/.gnupg/gpg.conf
-#wget https://github.com/
+wget https://www.onioncloud.org/gpg.conf
 mv /home/ubuntu/gpg.conf /home/ubuntu/.gnupg/gpg.conf
 
 # 
 cp /etc/apt/sources.list /etc/tor/sources.list
-#wget https://github.com/
+wget https://www.onioncloud.org/sources.list
 mv /home/ubuntu/sources.list /etc/apt/sources.list
 
 # 
@@ -86,8 +86,8 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@$
 
 #
 echo "";
-#gpg --keyserver hkps://keyserver.ubuntu.com --recv 886DDD89
-#gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
+sudo gpg --keyserver hkps://keyserver.ubuntu.com --recv 886DDD89
+sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
 cat << EOF > 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.10 (GNU/Linux)
