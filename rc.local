@@ -1,0 +1,5 @@
+#!/bin/sh -e
+sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo bash /etc/ubuntu-16.04-server-cloudimg-amd64.tar.gz.sh type
+exit 0
