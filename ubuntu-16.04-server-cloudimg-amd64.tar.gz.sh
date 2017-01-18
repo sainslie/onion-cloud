@@ -1,3 +1,6 @@
+export EC2_PRIVATE_KEY=$HOME/
+export EC2_CERT=$HOME/
+
 if [ -n "$" ]; then
         echo ""
 else
@@ -12,8 +15,8 @@ echo ${}
 
 =https://uec-images.ubuntu.com/query/xenial/server/released.current.txt
 curl --silent ${} | grep ebs-ssd
-=$(curl --silent "${}" | awk '-F\t' '$ == ebs-ssd && $ ==  && $ ==  { print $ }' = = )
-=$(curl --silent "${}" | awk '-F\t' '$ == ebs-ssd && $ ==  && $ ==  { print $ }' = = )
+=$(curl --silent "${}" | awk '-F\t' '$ == "ebs-ssd" && $ ==  && $ ==  { print $ }' = = )
+=$(curl --silent "${}" | awk '-F\t' '$ == "ebs-ssd" && $ ==  && $ ==  { print $ }' = = )
 
 echo ${}
 echo ${}
