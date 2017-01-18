@@ -1,6 +1,6 @@
 #!/bin/bash
 ="`whoami`";
-="`lsb_release -c|cut -f2`";
+="`lsb_release -cs`";
 ="/etc/apt/sources.list";
 ="";
 ="/etc/tor/torrc";
@@ -25,6 +25,7 @@ apt-get update
 apt-get install apt-transport-https
 apt-get install tlsdate
 apt-get install ca-certificates
+apt-get install gnupg-curl
 apt-get install dialog
 apt-get -y upgrade
 
@@ -77,7 +78,7 @@ mv /home/ubuntu/sources.list /etc/apt/sources.list
 
 # 
 echo ""
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "sudo gpg --keyserver hkps://keyserver.ubuntu.com --recv-key 4D4C6404"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 4D4C6404"
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
@@ -86,7 +87,7 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@$
 
 #
 echo "";
-sudo gpg --keyserver hkps://keyserver.ubuntu.com --recv 886DDD89
+sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 886DDD89
 sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
 cat << EOF > 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
