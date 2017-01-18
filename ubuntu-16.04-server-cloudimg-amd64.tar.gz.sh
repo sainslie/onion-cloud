@@ -4,15 +4,15 @@ export EC2_URL=
 export EC2_PRIVATE_KEY=$HOME/
 export EC2_CERT=$HOME/
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
-amid-id='curl -m 5 http://169.254.169.254/latest/meta-data/ami-id';
-availability-zone='curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone';
-HOSTNAME='curl -m 5 http://169.254.169.254/latest/meta-data/hostname';
-instance-id='curl -m 5 http://169.254.169.254/latest/meta-data/instance-id';
-instance-type='curl -m 5 http://169.254.169.254/latest/meta-data/instance-type';
-kernel-id='curl -m 5 http://169.254.169.254/latest/meta-data/kernel-id';
-region='curl -m 5 http://169.254.169.254/latest/meta-data/region';
-reservation-id='curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id';
-security-groups='curl -m 5 http://169.254.169.254/latest/meta-data/security-groups';
+amid-id="'curl -m 5 http://169.254.169.254/latest/meta-data/ami-id'";
+availability-zone="'curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone'";
+HOSTNAME="'curl -m 5 http://169.254.169.254/latest/meta-data/hostname'";
+instance-id="'curl -m 5 http://169.254.169.254/latest/meta-data/instance-id'";
+instance-type="'curl -m 5 http://169.254.169.254/latest/meta-data/instance-type'";
+kernel-id="'curl -m 5 http://169.254.169.254/latest/meta-data/kernel-id'";
+region="'curl -m 5 http://169.254.169.254/latest/meta-data/region'";
+reservation-id="'curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id'";
+security-groups="'curl -m 5 http://169.254.169.254/latest/meta-data/security-groups'";
 
 if [ -n "$" ]; then
         echo ""
