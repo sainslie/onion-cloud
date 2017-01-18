@@ -42,31 +42,6 @@ wget https://www.onioncloud.org/50unattended-upgrades
 mv /home/ubuntu/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
 
 # 
-echo ""
-iptables -F
-iptables -t nat PREROUTING ACCEPT [0:0]
-iptables -t nat POSTROUTING ACCEPT [77:6173]
-iptables -t nat OUTPUT ACCEPT [77:6173]
-iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 9001 
-iptables COMMIT
-iptables save
-
-# 
-case "" in
-   "" ) echo "";;
-   "" ) echo "";;
-   "" ) echo "";;
-   * )
-echo "";
-echo "";
-echo "";
-echo "";
-echo "";
-exit 2;
-    ;;
-esac
-
-# 
 cp /home/ubuntu/.gnupg/gpg.conf /home/ubuntu/.gnupg/gpg.conf
 wget https://www.onioncloud.org/gpg.conf
 mv /home/ubuntu/gpg.conf /home/ubuntu/.gnupg/gpg.conf
@@ -78,12 +53,12 @@ mv /home/ubuntu/sources.list /etc/apt/sources.list
 
 # 
 echo ""
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 4D4C6404"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "echo $?"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 4D4C6404"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "echo $?"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
 
 #
 echo "";
@@ -203,6 +178,16 @@ clear
 		;;
 	esac
 clear
+
+# 
+echo ""
+iptables -F
+iptables -t nat PREROUTING ACCEPT [0:0]
+iptables -t nat POSTROUTING ACCEPT [77:6173]
+iptables -t nat OUTPUT ACCEPT [77:6173]
+iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 9001 
+iptables COMMIT
+iptables save
 
 # 
 cat << EOF > /etc/rc.local
