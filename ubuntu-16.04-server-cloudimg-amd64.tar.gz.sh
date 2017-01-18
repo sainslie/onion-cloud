@@ -35,7 +35,7 @@ sleep 20
 
 # 
 echo ""
-=$(ec2-create-volume --size 8 --region ${} --availability-zone ${} | awk {'print $'})
+=$(ec2-create-volume --encrypted --size 8 --region ${} --availability-zone ${} | awk {'print $'})
 sleep 20
 echo ""
 ec2-attach-volume --instance ${} --region ${} --device /dev/sdh ${}
