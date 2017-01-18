@@ -53,12 +53,12 @@ mv /home/ubuntu/sources.list /etc/apt/sources.list
 
 # 
 echo ""
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 4D4C6404"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "echo $?"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${} ubuntu@${$HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 4D4C6404"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "echo $?"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi" > /etc/
 
 #
 echo "";
@@ -144,7 +144,7 @@ clear
 	BandwidthBurst 1GB
 	ExitPolicy reject *:*
 	EOF
-		;;
+	;;
 	2)
 	cat << EOF >
 	Nickname $
@@ -163,7 +163,7 @@ clear
 	BandwidthBurst 1GB
 	ExitPolicy reject *:*
 	EOF
-		;;
+	;;
 	3)
 	cat << EOF >
 	SocksPort 0
@@ -175,7 +175,7 @@ clear
 	AccountingMax 10 GB
 	ExitPolicy reject *:*
 	EOF
-		;;
+	;;
 	esac
 clear
 

@@ -1,5 +1,9 @@
+#!/bin/bash
+export EC2_KEYPAIR=
+export EC2_URL=
 export EC2_PRIVATE_KEY=$HOME/
 export EC2_CERT=$HOME/
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 
 if [ -n "$" ]; then
         echo ""
@@ -22,7 +26,7 @@ echo ${}
 echo ${}
 
 # 
-=$(ec2-run-instances --region ${} --instance-type t2.micro --key ${} ${} --group | awk {'print $'} | grep i-)
+=$(ec2-run-instances --region ${} --instance-type t2.micro --key ${EC2_KEYPAIR} ${} --group | awk {'print $'} | grep i-)
 echo ${}
 echo ""
 sleep 45
@@ -41,37 +45,39 @@ echo ""
 ec2-attach-volume --instance ${} --region ${} --device /dev/sdh ${}
 sleep 20
 
+ec2-authorize default -p 22
+
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/SHA256SUMS && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/SHA256SUMS.gpg && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64.tar.gz"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "cd /mnt && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/SHA256SUMS && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/SHA256SUMS.gpg && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64.tar.gz"
 
 # 
 echo ""
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "sudo gpg --keyserver keyserver.ubuntu.com --recv-key 843938DF228D22F7B3742BC0D94AA3F0EFE21092"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "sudo gpg --keyserver keyserver.ubuntu.com --recv-key C5986B4F1257FFA86632CBA746181433FBB75451"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "echo $?"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "sudo gpg --keyserver keyserver.ubuntu.com --recv-key 843938DF228D22F7B3742BC0D94AA3F0EFE21092"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${$HOSTNAME} -q -t "sudo gpg --keyserver keyserver.ubuntu.com --recv-key C5986B4F1257FFA86632CBA746181433FBB75451"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "cd /mnt ; sudo gpg --verify SHA256SUMS.gpg SHA256SUMS"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "cd /mnt ; sudo sha256sum -c SHA256SUMS 2>&1 | grep OK"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "echo $?"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "if [ `echo $?` -eq "1" ]; then echo '' ; sudo rm /home/ubuntu/.ssh/authorized_keys ; fi"
 
 echo ""
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -t "sudo chown ubuntu:ubuntu /mnt && cd /mnt && tar -Sxvzf /mnt/ubuntu-16.04-server-cloudimg-amd64.tar.gz && sudo mkdir /mnt/src /mnt/target && sudo mount -o loop,rw /mnt/ubuntu-16.04-server-cloudimg-amd64-disk1.img /mnt/src && sudo mkfs.ext4 -F -L cloudimg-rootfs /dev/xvdh && sudo mount /dev/xvdh /mnt/target"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "sudo chown ubuntu:ubuntu /mnt && cd /mnt && tar -Sxvzf /mnt/ubuntu-16.04-server-cloudimg-amd64.tar.gz && sudo mkdir /mnt/src /mnt/target && sudo mount -o loop,rw /mnt/ubuntu-16.04-server-cloudimg-amd64-disk1.img /mnt/src && sudo mkfs.ext4 -F -L cloudimg-rootfs /dev/xvdh && sudo mount /dev/xvdh /mnt/target"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -v -t "sudo wget https://www.onioncloud.org/rc.local -O /mnt/src/etc/rc.local"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo wget https://www.onioncloud.org/rc.local -O /mnt/src/etc/rc.local"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -v -t "sudo sed -i s/type// /mnt/src/etc/rc.local"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo sed -i s/type// /mnt/src/etc/rc.local"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -v -t "sudo wget https://www.onioncloud.org/ec2-api-tools.sh -O /mnt/src/etc/ec2-api-tools.sh"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -v -t "sudo chmod +x /mnt/src/etc/ec2-api-tools.sh"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo wget https://www.onioncloud.org/ec2-api-tools.sh -O /mnt/src/etc/ec2-api-tools.sh"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo chmod +x /mnt/src/etc/ec2-api-tools.sh"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -v -t "sudo rsync -aXHAS /mnt/src/ /mnt/target"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo rsync -aXHAS /mnt/src/ /mnt/target"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${} ubuntu@${$HOSTNAME} -q -v -t "sudo umount /mnt/target && sudo umount /mnt/src"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo umount /mnt/target && sudo umount /mnt/src"
 
 # 
 =$(ec2-create-snapshot --region ${} ${} | grep ${}  | awk {'print $'})
@@ -81,7 +87,7 @@ ec2-describe-snapshots --region ${}
 echo $
 while [ "$" != "" ]
 do
-=$(ec2-describe-snapshots --region ${} | grep ${}  | awk {'print $}') && sleep 20
+=$(ec2-describe-snapshots --region ${REGION} | grep ${}  | awk {'print $}') && sleep 20
 echo $
 done
 
@@ -94,8 +100,8 @@ echo ""
 ec2-register --region ${} --snapshot ${} --architecture=amd64 --kernel=${} --name "ec2-api-tools-${}-${}-${}-${}" --description "ubuntu-16.04-server-cloudimg-amd64.tar.gz"
 
 # 
-ec2-detach-volume --region ${} ${}
+ec2-detach-volume --region ${REGION} ${}
 echo ""
 echo ""
 sleep 20
-ec2-terminate-instances --region ${} ${}
+ec2-terminate-instances --region ${REGION} ${}
