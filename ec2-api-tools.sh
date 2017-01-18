@@ -1,14 +1,15 @@
 #!/bin/bash
-="`whoami`";
-="`lsb_release -cs`";
+="'whoami'";
+HOSTNAME="'hostname'";
+="'lsb_release -cs'";
 ="/etc/apt/sources.list";
 ="";
 ="/etc/tor/torrc";
-="`curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id | sed 's/-//'`";
-="/etc/apt/apt.conf.d/10periodic"
-="/etc/apt/apt.conf.d/50unattended-upgrades"
-="/etc/network/interfaces"
-="/etc/apt/trusted.gpg.d/886DDD89.asc"
+='curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id';
+="/etc/apt/apt.conf.d/10periodic";
+="/etc/apt/apt.conf.d/50unattended-upgrades";
+="/etc/network/interfaces";
+="/etc/apt/trusted.gpg.d/886DDD89.asc";
 
 # 
 if [ "$" != "root" ]; then
@@ -192,7 +193,7 @@ iptables save
 # 
 cat << EOF > /etc/rc.local
 #!/bin/sh -e
-sudo screen tcpdump -v -i any -s 0 -w /home/ubuntu/
+sudo screen tcpdump -v -i any -s 0 -w ${HOME}/
 EOF
 echo ""
 echo "" > /etc/

@@ -4,6 +4,15 @@ export EC2_URL=
 export EC2_PRIVATE_KEY=$HOME/
 export EC2_CERT=$HOME/
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
+amid-id='curl -m 5 http://169.254.169.254/latest/meta-data/ami-id';
+availability-zone='curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone';
+HOSTNAME='curl -m 5 http://169.254.169.254/latest/meta-data/hostname';
+instance-id='curl -m 5 http://169.254.169.254/latest/meta-data/instance-id';
+instance-type='curl -m 5 http://169.254.169.254/latest/meta-data/instance-type';
+kernel-id='curl -m 5 http://169.254.169.254/latest/meta-data/kernel-id';
+region='curl -m 5 http://169.254.169.254/latest/meta-data/region';
+reservation-id='curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id';
+security-groups='curl -m 5 http://169.254.169.254/latest/meta-data/security-groups';
 
 if [ -n "$" ]; then
         echo ""
@@ -13,39 +22,24 @@ else
         echo ""
         exit
 fi
-# 
-echo ${}
-echo ${}
-
-=https://uec-images.ubuntu.com/query/xenial/server/released.current.txt
-curl --silent ${} | grep ebs-ssd
-=$(curl --silent "${}" | awk '-F\t' '$ == "ebs-ssd" && $ ==  && $ ==  { print $ }' = = )
-=$(curl --silent "${}" | awk '-F\t' '$ == "ebs-ssd" && $ ==  && $ ==  { print $ }' = = )
-
-echo ${}
-echo ${}
 
 # 
-=$(ec2-run-instances --region ${} --instance-type t2.micro --key ${EC2_KEYPAIR} ${} --group | awk {'print $'} | grep i-)
-echo ${}
-echo ""
-sleep 45
-=$(ec2-describe-instances --region ${} $ | awk '-F\t' '$ ==  { print $ }' =${} )
-echo ${}
-sleep 20
-=$(ec2-describe-instances --region ${} $ | awk '-F\t' '$ ==  { print $ }' =${} )
-echo ${}
-sleep 20
+echo ${region}
+echo ${ami-id}
+echo ${kernel-id}
+echo ${instance-id}
+echo ${availability-zone}
+echo ${reservation-id}
+echo ${instance-type}
+sleep 25
 
 # 
 echo ""
-=$(ec2-create-volume --encrypted --size 8 --region ${} --availability-zone ${} | awk {'print $'})
+volume_id=$(ec2-create-volume --encrypted --size 8 --region ${region} --availability-zone ${availability-zone} | awk {'print $'})
 sleep 20
 echo ""
-ec2-attach-volume --instance ${} --region ${} --device /dev/sdh ${}
+ec2-attach-volume --instance ${instance-id} --region ${region} --device /dev/sdh ${volume_id}
 sleep 20
-
-ec2-authorize default -p 22
 
 # 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "cd /mnt && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/SHA256SUMS && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/SHA256SUMS.gpg && sudo wget https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64.tar.gz"
@@ -80,14 +74,14 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo umount /mnt/target && sudo umount /mnt/src"
 
 # 
-=$(ec2-create-snapshot --region ${} ${} | grep ${}  | awk {'print $'})
-echo "ec2-describe-snapshots --region ${}"
-ec2-describe-snapshots --region ${} 
-=$(ec2-describe-snapshots --region ${} | grep ${}  | awk {'print $}')
+snapshot_id=$(ec2-create-snapshot --region ${region} ${volume_id} | grep ${volume_id}  | awk {'print $'})
+echo "ec2-describe-snapshots --region ${region}"
+ec2-describe-snapshots --region ${region} 
+=$(ec2-describe-snapshots --region ${region} | grep ${snapshot_id}  | awk {'print $}')
 echo $
 while [ "$" != "" ]
 do
-=$(ec2-describe-snapshots --region ${REGION} | grep ${}  | awk {'print $}') && sleep 20
+=$(ec2-describe-snapshots --region ${region} | grep ${snapshot_id}  | awk {'print $}') && sleep 20
 echo $
 done
 
@@ -97,11 +91,11 @@ done
 
 # 
 echo ""
-ec2-register --region ${} --snapshot ${} --architecture=amd64 --kernel=${} --name "ec2-api-tools-${}-${}-${}-${}" --description "ubuntu-16.04-server-cloudimg-amd64.tar.gz"
+ec2-register --region ${region} --snapshot ${snapshot_id} --architecture=amd64 --kernel=${kernel-id} --name "ec2-api-tools-${}-${}-${}-${}" --description "ubuntu-16.04-server-cloudimg-amd64.tar.gz"
 
 # 
-ec2-detach-volume --region ${REGION} ${}
+ec2-detach-volume --region ${region} ${volume_id}
 echo ""
 echo ""
 sleep 20
-ec2-terminate-instances --region ${REGION} ${}
+ec2-terminate-instances --region ${region} ${instance-id}
