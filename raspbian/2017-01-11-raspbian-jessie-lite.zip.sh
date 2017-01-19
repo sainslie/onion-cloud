@@ -26,7 +26,6 @@ apt-get install apt-transport-https
 apt-get install dialog
 apt-get install ca-certificates
 apt-get install gnupg-curl
-apt-get install lsb-release
 apt-get install tlsdate
 apt-get -y upgrade
 
