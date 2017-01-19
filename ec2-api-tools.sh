@@ -1,9 +1,9 @@
 #!/bin/bash
-export EC2_KEYPAIR=
-export EC2_URL=
-export EC2_PRIVATE_KEY=$HOME/
-export EC2_CERT=$HOME/
-export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
+export EC2_KEYPAIR=id_rsa
+export EC2_URL=https://ec2.eu-central-1.amazonaws.com
+export EC2_PRIVATE_KEY=$HOME/Downloads/pk-NC7MX6XJ3X7M3UKLIRRNRZJY34D3I6VS.pem
+export EC2_CERT=$HOME/Downloads/cert-NC7MX6XJ3X7M3UKLIRRNRZJY34D3I6VS.pem
+export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-i386/jre"
 amid-id="'curl -m 5 http://169.254.169.254/latest/meta-data/ami-id'";
 availability-zone="'curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone'";
 HOSTNAME="'curl -m 5 http://169.254.169.254/latest/meta-data/hostname'";
@@ -36,7 +36,7 @@ sleep 25
 
 # 
 echo ""
-volume_id=$(ec2-create-volume --encrypted --size 8 --region ${region} --availability-zone ${availability-zone} | awk {'print $'})
+volume_id=$(ec2-create-volume --size 8 --region ${region} --availability-zone ${availability-zone} | awk {'print $'})
 sleep 20
 echo ""
 ec2-attach-volume --instance ${instance-id} --region ${region} --device /dev/sdh ${volume_id}
@@ -65,8 +65,8 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo sed -i s/type// /mnt/src/etc/rc.local"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo wget https://www.onioncloud.org/ec2-api-tools.sh -O /mnt/src/etc/ec2-api-tools.sh"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo chmod +x /mnt/src/etc/ec2-api-tools.sh"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo wget ubuntu-16.04-server-cloudimg-amd64.tar.gz.sh -O /mnt/src/etc/ubuntu-16.04-server-cloudimg-amd64.tar.gz.sh"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo chmod +x /mnt/src/etc/ubuntu-16.04-server-cloudimg-amd64.tar.gz.sh"
 
 # 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo rsync -aXHAS /mnt/src/ /mnt/target"

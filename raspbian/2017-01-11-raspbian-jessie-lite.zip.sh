@@ -1,7 +1,7 @@
 #!/bin/bash
 whoami="'whoami'";
 HOSTNAME="'hostname'";
-lsb_release="'lsb_release -a'";
+uname="'uname -a'";
 ="/etc/apt/sources.list";
 HOME="$HOME/";
 torrc="/etc/tor/torrc";
