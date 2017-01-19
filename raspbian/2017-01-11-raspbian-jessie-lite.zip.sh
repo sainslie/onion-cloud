@@ -1,11 +1,10 @@
 #!/bin/bash
 ="'whoami'";
 HOSTNAME="'hostname'";
-="'lsb_release -cs'";
+="'lsb_release -a'";
 ="/etc/apt/sources.list";
 ="";
 ="/etc/tor/torrc";
-reservation-id="'curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id'";
 ="/etc/apt/apt.conf.d/10periodic";
 ="/etc/apt/apt.conf.d/50unattended-upgrades";
 ="/etc/network/interfaces";
@@ -24,10 +23,11 @@ echo ""
 echo ""
 apt-get update
 apt-get install apt-transport-https
-apt-get install tlsdate
+apt-get install dialog
 apt-get install ca-certificates
 apt-get install gnupg-curl
-apt-get install dialog
+apt-get install lsb-release
+apt-get install tlsdate
 apt-get -y upgrade
 
 # 
@@ -36,20 +36,20 @@ echo ""
 
 # 
 cp /etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/10periodic
-wget https://www.onioncloud.org/10periodic
+wget 
 mv /home/ubuntu/10periodic /etc/apt/apt.conf.d/10periodic
 cp /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
-wget https://www.onioncloud.org/50unattended-upgrades
+wget 
 mv /home/ubuntu/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
 
 # 
 cp /home/ubuntu/.gnupg/gpg.conf /home/ubuntu/.gnupg/gpg.conf
-wget https://www.onioncloud.org/gpg.conf
+wget 
 mv /home/ubuntu/gpg.conf /home/ubuntu/.gnupg/gpg.conf
 
 # 
 cp /etc/apt/sources.list /etc/tor/sources.list
-wget https://www.onioncloud.org/sources.list
+wget 
 mv /home/ubuntu/sources.list /etc/apt/sources.list
 
 # 
