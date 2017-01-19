@@ -1,17 +1,17 @@
 #!/bin/bash
-="'whoami'";
+whoami="'whoami'";
 HOSTNAME="'hostname'";
-="'lsb_release -a'";
+lsb_release="'lsb_release -a'";
 ="/etc/apt/sources.list";
-="";
-="/etc/tor/torrc";
-="/etc/apt/apt.conf.d/10periodic";
-="/etc/apt/apt.conf.d/50unattended-upgrades";
-="/etc/network/interfaces";
-="/etc/apt/trusted.gpg.d/886DDD89.asc";
+HOME="$HOME/";
+torrc="/etc/tor/torrc";
+10periodic="/etc/apt/apt.conf.d/10periodic";
+50unattended-upgrades="/etc/apt/apt.conf.d/50unattended-upgrades";
+interfaces="/etc/network/interfaces";
+apt="/etc/apt/trusted.gpg.d/886DDD89.asc";
 
 # 
-if [ "$" != "root" ]; then
+if [ "$whoami" != "root" ]; then
 echo "";
 echo "";
   exit 1;
@@ -35,22 +35,21 @@ apt-get -y upgrade
 echo ""
 
 # 
-cp /etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/10periodic
-wget 
-mv /home/ubuntu/10periodic /etc/apt/apt.conf.d/10periodic
-cp /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
-wget 
-mv /home/ubuntu/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
+mv /etc/apt/apt.conf.d/10periodic ${HOME}/10periodic
+wget -O /tmp/50unattended-upgrades
+mv /tmp/10periodic /etc/apt/apt.conf.d/10periodic
 
-# 
-cp /home/ubuntu/.gnupg/gpg.conf /home/ubuntu/.gnupg/gpg.conf
-wget 
-mv /home/ubuntu/gpg.conf /home/ubuntu/.gnupg/gpg.conf
+mv /etc/apt/apt.conf.d/50unattended-upgrades ${HOME}/50unattended-upgrades
+wget -O /tmp/50unattended-upgrades
+mv /tmp/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
 
-# 
-cp /etc/apt/sources.list /etc/tor/sources.list
-wget 
-mv /home/ubuntu/sources.list /etc/apt/sources.list
+mv ${HOME}/.gnupg/gpg.conf ${HOME}/.gnupg/gpg.conf
+wget -O /tmp/gpg.conf
+mv /tmp/gpg.conf ${HOME}/.gnupg/gpg.conf
+
+mv /etc/apt/sources.list ${HOME}/sources.list
+wget -O /tmp/sources.list
+mv /tmp/sources.list ${HOME}/sources.list
 
 # 
 echo ""
@@ -65,7 +64,7 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAI
 echo "";
 sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 886DDD89
 sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
-cat << EOF > 
+cat << EOF > ${apt}
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
@@ -117,18 +116,17 @@ cp /etc/tor/torrc /etc/tor/torrc
 =20
 =120
 =2
-="https://cloud.torproject.org/"
+=""
 =""
 =""
 
 =(1 "" 2 "" 3 "")
 
 =$(dialog --clear \ --backtitle "" \ --title "" \ --menu "" \ \ "" \ 2>&1 >/dev/tty)
-
 clear
 	case in
 	1)
-	cat << EOF >
+	cat << EOF > ${torrc}
 	Nickname $
 	SocksPort 0
 	ORPort 443
@@ -147,7 +145,7 @@ clear
 	EOF
 	;;
 	2)
-	cat << EOF >
+	cat << EOF > ${torrc}
 	Nickname $
 	SocksPort 0
 	ORPort 443
@@ -166,7 +164,7 @@ clear
 	EOF
 	;;
 	3)
-	cat << EOF >
+	cat << EOF > ${torrc}
 	SocksPort 0
 	ORPort 443
 	ORListenAddress 0.0.0.0:9001
@@ -193,10 +191,10 @@ iptables save
 # 
 cat << EOF > /etc/rc.local
 #!/bin/sh -e
-sudo screen tcpdump -v -i any -s 0 -w ${HOME}/
+sudo screen tcpdump -v -i any -s 0 -w ${HOME}/eth0.cap
 EOF
 echo ""
-echo "" > /etc/
+echo "" > /etc/2017-01-11-raspbian-jessie-lite.zip.sh
 echo ""
 sleep 20
 reboot

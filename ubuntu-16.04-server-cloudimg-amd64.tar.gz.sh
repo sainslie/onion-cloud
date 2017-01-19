@@ -1,18 +1,18 @@
 #!/bin/bash
-="'whoami'";
+whoami="'whoami'";
 HOSTNAME="'hostname'";
-="'lsb_release -cs'";
+lsb_release="'lsb_release -cs'";
 ="/etc/apt/sources.list";
-="";
-="/etc/tor/torrc";
+HOME="$HOME/";
+torrc="/etc/tor/torrc";
 reservation-id="'curl -m 5 http://169.254.169.254/latest/meta-data/reservation-id'";
-="/etc/apt/apt.conf.d/10periodic";
-="/etc/apt/apt.conf.d/50unattended-upgrades";
-="/etc/network/interfaces";
-="/etc/apt/trusted.gpg.d/886DDD89.asc";
+10periodic="/etc/apt/apt.conf.d/10periodic";
+50unattended-upgrades="/etc/apt/apt.conf.d/50unattended-upgrades";
+interfaces="/etc/network/interfaces";
+apt="/etc/apt/trusted.gpg.d/key0xEE8CBC9E886DDD89.asc";
 
 # 
-if [ "$" != "root" ]; then
+if [ "$whoami" != "root" ]; then
 echo "";
 echo "";
   exit 1;
@@ -24,10 +24,11 @@ echo ""
 echo ""
 apt-get update
 apt-get install apt-transport-https
-apt-get install tlsdate
+apt-get install dialog
 apt-get install ca-certificates
 apt-get install gnupg-curl
-apt-get install dialog
+apt-get install lsb-release
+apt-get install tlsdate
 apt-get -y upgrade
 
 # 
@@ -35,22 +36,21 @@ apt-get -y upgrade
 echo ""
 
 # 
-cp /etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/10periodic
-wget https://www.onioncloud.org/10periodic
-mv /home/ubuntu/10periodic /etc/apt/apt.conf.d/10periodic
-cp /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
-wget https://www.onioncloud.org/50unattended-upgrades
-mv /home/ubuntu/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
+mv /etc/apt/apt.conf.d/10periodic ${HOME}/10periodic
+wget -O /tmp/50unattended-upgrades
+mv /tmp/10periodic /etc/apt/apt.conf.d/10periodic
 
-# 
-cp /home/ubuntu/.gnupg/gpg.conf /home/ubuntu/.gnupg/gpg.conf
-wget https://www.onioncloud.org/gpg.conf
-mv /home/ubuntu/gpg.conf /home/ubuntu/.gnupg/gpg.conf
+mv /etc/apt/apt.conf.d/50unattended-upgrades ${HOME}/50unattended-upgrades
+wget -O /tmp/50unattended-upgrades
+mv /tmp/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
 
-# 
-cp /etc/apt/sources.list /etc/tor/sources.list
-wget https://www.onioncloud.org/sources.list
-mv /home/ubuntu/sources.list /etc/apt/sources.list
+mv ${HOME}/.gnupg/gpg.conf ${HOME}/.gnupg/gpg.conf
+wget -O /tmp/gpg.conf
+mv /tmp/gpg.conf ${HOME}/.gnupg/gpg.conf
+
+mv /etc/apt/sources.list ${HOME}/sources.list
+wget -O /tmp/sources.list
+mv /tmp/sources.list ${HOME}/sources.list
 
 # 
 echo ""
@@ -63,11 +63,11 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  -i ${EC2_KEYPAI
 
 #
 echo "";
-sudo gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 886DDD89
-sudo gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
+gpg --keyserver hkps://keyserver.ubuntu.com --keyserver-options ca-cert-file=DigiCert Global Root CA --recv-key 886DDD89
+ gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
 cat << EOF > 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v1
 
 mQENBEqg7GsBCACsef8koRT8UyZxiv1Irke5nVpte54TDtTl1za1tOKfthmHbs2I
 4DHWG3qrwGayw+6yb5mMFe0h9Ap9IbilA5a1IdRsdDgViyQQ3kvdfoavFHRxvGON
@@ -76,13 +76,13 @@ dTzwu3WHaAwL8d5MJAGQn2i6bTw4UHytrYemS1DdG/0EThCCyAnPmmb8iBkZlSW8
 6MzVqTrN37yvYWTXk6MwKH50twaX5hzZAlSh9eqRjZLq51DDomO7EumXP90rS5mT
 QrS+wiYfGQttoZfbh3wl5ZjejgEjx+qrnOH7ABEBAAG0JmRlYi50b3Jwcm9qZWN0
 Lm9yZyBhcmNoaXZlIHNpZ25pbmcga2V5iQE8BBMBAgAmAhsDBgsJCAcDAgQVAggD
-BBYCAwECHgECF4AFAlA+M24FCQ0iFQAACgkQ7oy8noht3YkZsAf/Z+O15tDvGwLz
-NROeMiTyOZ4fyQ1lynUpOS3fUJl3qM30oWPl1tK5pdAZgwleL0Co8d27Hv14zpCO
-wwI3htgl7dsD8IS564v1sHGx+X1qfLzInwFxIlVxzrVbhUNeLSKiBJ6qwcZqAIep
-eS2Lv+l3lELOvjbHQ4bx5DqoVZn0uUqksh3PkyN9Du4lZ2WGiTm1pIWDxY8kJIgx
-pDFEL3e5i/cIQy6wsfeE2Nw2T0qoxn+sWSvwBUijtfq0K41w4jpEsnmjiZQ0l+VT
-wcoGlF/oQuEkAV+FXQCLw26a2aPUXizttlPINJ8JiNzl68j8FaMnqkaFAzJffbM8
-D1UOZVdmnbkBDQRKoO2QAQgA2uKxSRSKpd2JO1ODUDuxppYacY1JkemxDUEHG31c
+BBYCAwECHgECF4AFAlQDRrwFCRSpj0cACgkQ7oy8noht3YnPxwgAp9e7yRer1v1G
+oywrrfam3afWNy7G0bI5gf98WPrhkgc3capVVDpOe87OaeezeICP6duTE8S5Yurw
+x+lbcCPZp7Co4uyjAdIjVHAhwGGhpzG34Y8Z6ebCd4z0AElNGpDQpMtKppLnCRRw
+knuvpKBIn4sxDgsofIg6vo4i8nL5mrIzhDpfbW9NK9lV4KvmvB4T+X5ZzdTkQ0ya
+1aHtGdMaTtKmOMVk/4ceGRDw65pllGEo4ZQEgGVZ3TmNHidiuShGqiVEbSDGRFEV
+OUiF9yvR+u6h/9iqULxOoAOfYMuGtatjrZM46d8DR2O1o00nbGHWYaQVqimGd52W
+rCJghAIMxbkBDQRKoO2QAQgA2uKxSRSKpd2JO1ODUDuxppYacY1JkemxDUEHG31c
 qCVTuFz4alNyl4I+8pmtX2i+YH7W9ew7uGgjRzPEjTOm8/Zz2ue+eQeroveuo0hy
 Fa9Y3CxhNMCE3EH4AufdofuCmnUf/W7TzyIvzecrwFPlyZhqWnmxEqu8FaR+jXK9
 Jsx2Zby/EihNoCwQOWtdv3I4Oi5KBbglxfxE7PmYgo9DYqTmHxmsnPiUE4FYZG26
@@ -99,8 +99,21 @@ GAIFqx/h34y3MBToEzXqnfSEkZGM1iZtIgO1i3oVOGVlaGaE+wQKhg6zJZ6oTOZ+
 /ufRO/xdmfGHZdlAfUEau/YiLknElEUNAQdUNuMB9TUtmBvh00aYoOjzRoAentTS
 +/3p3+iQXK8NPJjQWBNToUVUQiYD9bBCIK/aHhBhmdEc0YfcWyQgd6IL7547BRJb
 PDjuOyAfRWLJ17uJMGYqOFTkputmpG8n0dG0yUcUI4MoA8U79iG83EAd5vTS1eJi
-Tmc+PLBneknviBEBiSRO4Yu5q4QxksOqYhFYBzOj6HXwgJCczVEZUCnuW7kHww==
-=10NR
+Tmc+PLBneknviBEBiSRO4Yu5q4QxksOqYhFYBzOj6HXwgJCczVEZUCnuW7kHw4kC
+RAQYAQIADwIbAgUCVANGwQUJEOcnLwEpwF0gBBkBAgAGBQJKoO2QAAoJEHSpQboh
+nsgQtBEH+QH/xtP9sc9EMB+fDegsf2aDHLT28YpvhfjLWVrYmXRiextcBRiCwLT6
+khulhA2vk4Tnh22dbhr87hUtuCJZGR5Y4E2ZS99KfAxXcu96Wo6Ki0X665G/QyUx
+oFYT9msYZzlv0OmbuIaED0p9lRlTlZrsDG969a/d30G8NG0Mv6CH/Sfqtq26eP3I
+TqHXe1zFveVTMIliBHaWGg9JqHiu/mm2MwUxuQAzLmaCtma5LXkGTUHsUruIdHpl
+nqy7DHb3DC8mIjnVj9dvPrNXv54mxxhTwHkT5EPjFTzGZa6oFavYt+FzwPR67cVQ
+Xfz7jh6GktcqxrgA7KUmUwuaJ+DzGkIJEO6MvJ6Ibd2JiakIAKqtDaLgc796crcZ
+0vwQGlf5+H3OBj/sYkyNAByDdN2ZsuO7M1FT4OZcCBHqKScbeSfJQrqSQscSAURU
++fTGxNJrEDk9S975YAXiInRk71XawUNWhEqER5vshyLOx9es5FJo/rw7v253t+vz
+KElNG3NhDnAe4UOQM73W2YfbWI6cikzwiWxHttO0oHByd/nqxMUP2onXQMI8fRRn
+RQmQKEzXZq46TVETp6N3WyBu30gjuz1Twq3QsS9Ga7crrhHk4E33FsU0Lq2GDTsT
+7+rFxdVTTyCVQU33QEdmZYU6SIxTDllyYF1ooqfJWMtwvwFNW6YElduoCCJZNQJ5
+zR1QR/k=
+=iLXB
 -----END PGP PUBLIC KEY BLOCK-----
 EOF
 apt-key add 
@@ -117,7 +130,7 @@ cp /etc/tor/torrc /etc/tor/torrc
 =20
 =120
 =2
-="https://cloud.torproject.org/"
+=""
 =""
 =""
 
@@ -128,7 +141,7 @@ cp /etc/tor/torrc /etc/tor/torrc
 clear
 	case in
 	1)
-	cat << EOF >
+	cat << EOF > ${torrc}
 	Nickname $
 	SocksPort 0
 	ORPort 443
@@ -147,7 +160,7 @@ clear
 	EOF
 	;;
 	2)
-	cat << EOF >
+	cat << EOF > ${torrc}
 	Nickname $
 	SocksPort 0
 	ORPort 443
@@ -166,7 +179,7 @@ clear
 	EOF
 	;;
 	3)
-	cat << EOF >
+	cat << EOF > ${torrc}
 	SocksPort 0
 	ORPort 443
 	ORListenAddress 0.0.0.0:9001
@@ -193,10 +206,10 @@ iptables save
 # 
 cat << EOF > /etc/rc.local
 #!/bin/sh -e
-sudo screen tcpdump -v -i any -s 0 -w ${HOME}/
+sudo screen tcpdump -v -i any -s 0 -w ${HOME}/eth0.cap
 EOF
 echo ""
-echo "" > /etc/
+echo "" > /etc/ubuntu-16.04-server-cloudimg-amd64.tar.gz.sh
 echo ""
 sleep 20
 reboot

@@ -24,13 +24,14 @@ else
 fi
 
 # 
-echo ${region}
 echo ${ami-id}
-echo ${kernel-id}
-echo ${instance-id}
 echo ${availability-zone}
-echo ${reservation-id}
+echo ${instance-id}
 echo ${instance-type}
+echo ${kernel-id}
+echo ${region}
+echo ${reservation-id}
+
 sleep 25
 
 # 
