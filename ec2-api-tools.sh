@@ -1,8 +1,8 @@
 #!/bin/bash
 export EC2_KEYPAIR=id_rsa
 export EC2_URL=https://ec2.eu-central-1.amazonaws.com
-export EC2_PRIVATE_KEY=$HOME/Downloads/pk-NC7MX6XJ3X7M3UKLIRRNRZJY34D3I6VS.pem
-export EC2_CERT=$HOME/Downloads/cert-NC7MX6XJ3X7M3UKLIRRNRZJY34D3I6VS.pem
+export EC2_PRIVATE_KEY=$HOME/
+export EC2_CERT=$HOME/
 export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-i386/jre"
 amid-id="'curl -m 5 http://169.254.169.254/latest/meta-data/ami-id'";
 availability-zone="'curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone'";
@@ -59,7 +59,7 @@ echo ""
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -t "sudo chown ubuntu:ubuntu /mnt && cd /mnt && tar -Sxvzf /mnt/ubuntu-16.04-server-cloudimg-amd64.tar.gz && sudo mkdir /mnt/src /mnt/target && sudo mount -o loop,rw /mnt/ubuntu-16.04-server-cloudimg-amd64-disk1.img /mnt/src && sudo mkfs.ext4 -F -L cloudimg-rootfs /dev/xvdh && sudo mount /dev/xvdh /mnt/target"
 
 # 
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo wget https://www.onioncloud.org/rc.local -O /mnt/src/etc/rc.local"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo wget -O /mnt/src/etc/rc.local"
 
 # 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${EC2_KEYPAIR} ubuntu@${HOSTNAME} -q -v -t "sudo sed -i s/type// /mnt/src/etc/rc.local"
@@ -87,12 +87,12 @@ echo $
 done
 
 # 
-=$(date +"%m-%d-%Y")
+date=$(date +"%m-%d-%Y")
 =$(echo `</dev/urandom tr -dc A-Za-z0-9 | head -c8`)
 
 # 
 echo ""
-ec2-register --region ${region} --snapshot ${snapshot_id} --architecture=amd64 --kernel=${kernel-id} --name "ec2-api-tools-${}-${}-${}-${}" --description "ubuntu-16.04-server-cloudimg-amd64.tar.gz"
+ec2-register --region ${region} --snapshot ${snapshot_id} --architecture=amd64 --kernel=${kernel-id} --name "ec2-api-tools-${}-${region}-${date}-${}" --description "ubuntu-16.04-server-cloudimg-amd64.tar.gz"
 
 # 
 ec2-detach-volume --region ${region} ${volume_id}
