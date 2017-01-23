@@ -3,7 +3,7 @@ whoami="'whoami'";
 HOSTNAME="'hostname'";
 uname="'uname -a'";
 ="/etc/apt/sources.list";
-HOME="$HOME/";
+HOME="$HOME";
 torrc="/etc/tor/torrc";
 10periodic="/etc/apt/apt.conf.d/10periodic";
 50unattended-upgrades="/etc/apt/apt.conf.d/50unattended-upgrades";
@@ -19,8 +19,6 @@ fi
 
 # 
 echo ""
-echo ""
-echo ""
 apt-get update
 apt-get install apt-transport-https
 apt-get install dialog
@@ -29,7 +27,6 @@ apt-get install gnupg-curl
 apt-get install tlsdate
 apt-get -y upgrade
 
-# 
 # 
 echo ""
 
@@ -110,7 +107,7 @@ apt-get -y install tor tor-geoipdb tor-arm deb.torproject.org-keyring obfsproxy 
 
 #
 echo "";
-cp /etc/tor/torrc /etc/tor/torrc
+cp /etc/tor/torrc ${HOME}/torrc
 
 =20
 =120
@@ -188,7 +185,9 @@ iptables COMMIT
 iptables save
 
 # 
-cat << EOF > /etc/rc.local
+cp /etc/local ${HOME}/rc.local
+wget -O /tmp/rc.local
+mv /tmp/rc.local /etc/rc.local
 #!/bin/sh -e
 sudo screen tcpdump -v -i any -s 0 -w ${HOME}/eth0.cap
 EOF
